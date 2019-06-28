@@ -10,6 +10,10 @@ echo "apple_tv"
 
 node parseAccessories.js ~/Code/alexaAwsBackend/samples/apple_tv_accessories.json >  ~/Code/alexaAwsBackend/samples/apple_tv.json
 
+echo "apple_tv_space"
+
+node newParseAccessories.js ~/Code/alexaAwsBackend/samples/apple_tv_space_accessories.json > ~/Code/alexaAwsBackend/samples/apple_tv_space.json
+
 echo "mi-light"
 
 node parseAccessories.js ~/Code/alexaAwsBackend/samples/mi-light_accessories.json >  ~/Code/alexaAwsBackend/samples/mi-light.json
@@ -32,8 +36,32 @@ node parseAccessories.js ~/Code/alexaAwsBackend/samples/howard_dump.json >  ~/Co
 
 echo "bose soundlink"
 
-node parseAccessories.js ~/Code/alexaAwsBackend/samples/bose_soundlink.json >  ~/Code/alexaAwsBackend/samples/bose.json 
+node parseAccessories.js ~/Code/alexaAwsBackend/samples/bose_soundlink.json >  ~/Code/alexaAwsBackend/samples/bose.json
 
 echo "Heater Cooler"
 
 node parseAccessories.js ~/Code/alexaAwsBackend/samples/heater_cooler_discovery.json > ~/Code/alexaAwsBackend/samples/heater.json
+
+echo "Nuki Door Lock"
+
+node parseAccessories.js ~/Code/alexaAwsBackend/samples/nuki_smart_lock.json > ~/Code/alexaAwsBackend/samples/nuki.json
+
+echo "Yamaha"
+
+node parseAccessories.js ~/Code/alexaAwsBackend/samples/yamaha_accessories.json >  ~/Code/alexaAwsBackend/samples/yamaha.json
+
+echo "Samsung"
+
+node parseAccessories.js ~/Code/alexaAwsBackend/samples/samsung_tv_accessories.json > ~/Code/alexaAwsBackend/samples/samsung_tv.json
+
+echo "Blinds etc"
+
+node parseAccessories.js ~/Code/alexaAwsBackend/samples/lamp_accessories.json > ~/Code/alexaAwsBackend/samples/lamp.json
+
+echo "Yamaha Zone Tv"
+
+node parseAccessories.js ~/Code/alexaAwsBackend/samples/yamaha_zone_tv_accessories.json > ~/Code/alexaAwsBackend/samples/yamaha_zone_tv.json
+
+echo "Nest"
+
+node newParseAccessories.js ~/Code/alexaAwsBackend/samples/nest_accessories.json > ~/Code/alexaAwsBackend/samples/nest.json
