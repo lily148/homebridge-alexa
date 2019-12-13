@@ -1,5 +1,6 @@
 {
   "name": "homebridge-alexa",
+  "displayName": "Alexa Plugin for Smart Gateway",
   "version": "0.4.45",
   "description": "Alexa Skill frontend for Homebridge",
   "main": "plugin.js",
