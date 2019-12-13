@@ -109,13 +109,13 @@
         }
       ]
     },
+    "pin",
     {
       "type": "fieldset",
       "title": "Optional Settings",
       "expandable": true,
       "expanded": false,
       "items": [
-        "pin",
         "routines",
         "refresh",
         "filter"
