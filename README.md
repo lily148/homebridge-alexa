@@ -32,7 +32,7 @@ You will need to manually remove all existing devices after upgrading and setup 
    * [Supported devices](#supported-devices)
       * [HomeKit/Homebridge Devices supported](#homekithomebridge-devices-supported)
          * [Native Support](#native-support)
-         * [Supported as Other](#supported-as-other)
+         * [Supported as Other Types](#supported-as-other-types)
       * [Unsupported device types](#unsupported-device-types)
    * [Alexa Voice Commands](#alexa-voice-commands)
       * [Setup](#setup)
@@ -85,7 +85,9 @@ You will need to manually remove all existing devices after upgrading and setup 
 * Support for Fans (As Alexa doesn't support Fans coverings I'm using Other)
 * Support for Window coverings/blinds (As Alexa doesn't support window coverings I'm using Other)
 * Support for Garage Doors
-* Support for Temperature, Contact and Motion Sensors.  Also supports sending real time updates from Contact and Motion sensors to Alexa, for use in routines.
+* Support for Temperature, Contact and Motion Sensors.  
+* Support for Occupancy Sensors as a Contact sensor.  
+* Also supports sending real time updates from Contact, Occupancy and Motion sensors to Alexa, for use in routines.
 * Support for Fan2 aka Dyson fans
 * Support for Valves, Sprinklers and Shower Heads (As Alexa doesn't support these, they are Other)
 * Support for more than 100 accessories
@@ -116,12 +118,13 @@ This only supports accessories connected via a homebridge plugin, any 'Homekit' 
 * Door locks ( Lock and status only, Alexa does not support unlocking )
 * HomeKit Television ( Initial support only On/Off and Volume Control )
 
-### Supported as Other
+### Supported as Other Types
 
 * Door/Garage Door - Supported as a on/off device and also supported as a contact sensor for routines
-* Fans - Supported as Other
+* Fans, Humidifier Dehumidifier and Air Purifiers - Supported as a Switch
 * Window Coverings / Blinds - Supported as Other
 * Valves, Sprinklers and Shower Heads - Supported as a light bulb
+* Occupancy Sensors - Supported as a Contact Sensor
 
 ## Unsupported device types
 
@@ -289,14 +292,17 @@ HOMEBRIDGE_OPTS=-I
 
 ```
 pm2 delete homebridge
+pm2 cleardump
 pm2 start homebridge -- -I
 pm2 save
 ```
-To review your settings, to ensure that they are working correctly.
+To review your settings, use command below to check if homebridge was sucessfully registered to pm2. After that, you can try to reboot your system and check whether you can control homebridge devices with Alexa app.
+
 
 ```
 pm2 show homebridge
 ```
+
 
 * If you have multiple homebridge options, the -I should be listed first. ie
 
@@ -607,6 +613,8 @@ Please note, as part of the verbose output from discovery devices, all your devi
 * All homebridge PIN's in your setup need to be set to the same value.
 * Whitelisting/blacklisting of accessories is not supported, but this can be achieved at the plugin level by putting the plugins you don't want exposed to Alexa in their own instance of HomeBridge, and for that instance of Alexa, don't include -I command line option.  Discovery will fail for that instance, and the accessories will not be exposed.
 * An Alexa device or a software based Alexa is required. Using just the App or Website does not work, and device discovery will fail to find devices. The Reverb app is a software based Alexa that is known to work.
+* The maximum number of supported devices is 300.  This is a limitation from the from the Amazon side, and not the plugin.
+* If your Amazon account is not domiciled in the country where your Alexa is located the skill will not work.  This is a limitation on the Amazon side and not with the plugin.  ie if you are in the UK and use an Amazon.com account, the skill will not work.  You need to use an Amazon account domiciled in the UK
 
 ### Slack Channel
 
