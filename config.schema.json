@@ -3,7 +3,7 @@
   "pluginType": "platform",
   "singular": true,
   "headerDisplay": "An account to link your Amazon Alexa to Homebridge needs to created on https://www.homebridge.ca/. This account will be used when you enable the skill in the Alexa App, and in the configuration below.",
-  "footerDisplay": "See https://github.com/NorthernMan54/homebridge-alexa for more information and instructions.\n\nHomebridge Alex Skill: https://www.amazon.com/Northern-Man-54-Homebridge/dp/B07B9QMTFQ",
+  "footerDisplay": "For help, please visit https://ibeyondsmart.com",
   "schema": {
     "type": "object",
     "properties": {
