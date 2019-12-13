@@ -30,6 +30,7 @@
         "title": "Homekit Pin",
         "type": "string",
         "placeholder": "031-45-154",
+        "required": true,
         "description": "Fill in the Homekit Pin at the 'Status' page."
       },
       "routines": {
