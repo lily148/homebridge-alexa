@@ -1,7 +1,7 @@
 {
   "name": "homebridge-alexa",
   "displayName": "Alexa Plugin for Smart Gateway",
-  "version": "0.4.45",
+  "version": "0.4.51",
   "description": "Alexa Skill frontend for Homebridge",
   "main": "plugin.js",
   "scripts": {
@@ -28,7 +28,7 @@
     "is-my-json-valid": ">=2.19.0",
     "debug": ">2.6.9",
     "mqtt": ">=2.18.8",
-    "hap-node-client": ">=0.0.27",
+    "hap-node-client": ">=0.0.28",
     "bottleneck": ">=2.18.0"
   },
   "author": "NorthernMan54",
