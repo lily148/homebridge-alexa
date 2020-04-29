@@ -4,13 +4,18 @@
 var AlexaLocal = require('./lib/alexaLocal.js').alexaLocal;
 var alexaActions = require('./lib/alexaActions.js');
 var EventEmitter = require('events').EventEmitter;
-// var debug = require('debug')('alexaPlugin');
+var os = require("os");
 
 const packageConfig = require('./package.json');
+let Service, Characteristic;
 
 var options = {};
+var alexaService;
 
 module.exports = function(homebridge) {
+  Service = homebridge.hap.Service;
+  Characteristic = homebridge.hap.Characteristic;
+
   homebridge.registerPlatform("homebridge-alexa", "Alexa", alexaHome);
 };
 
@@ -28,6 +33,9 @@ function alexaHome(log, config, api) {
   this.oldParser = config['oldParser'] || false;
   this.refresh = config['refresh'] || 60 * 15; // Value in seconds, default every 15 minute's
   this.speakers = config['speakers'] || false; // Array of speaker devices
+  this.inputs = config['inputs'] || false; // Array of input devices
+  this.channel = config['channel'] || false; // Array of input devices
+  this.name = config['name'] || "homebridgeAlexa";
 
   // Enable config based DEBUG logging enable
   this.debug = config['debug'] || false;
@@ -62,8 +70,10 @@ function alexaHome(log, config, api) {
 
 alexaHome.prototype = {
   accessories: function(callback) {
-    this.log("accessories");
-    callback();
+    // this.log("Accessories");
+    var accessories = [];
+    accessories.push(new AlexaService(this.name, this.log));
+    callback(accessories);
   }
 };
 
@@ -87,6 +97,10 @@ alexaHome.prototype.didFinishLaunching = function() {
     combine: this.combine,
     speakers: this.speakers,
     filter: this.filter,
+    alexaService: alexaService,
+    Characteristic: Characteristic,
+    inputs: this.inputs,
+    channel: this.channel,
     servers: [{
       protocol: 'mqtt',
       host: host,
@@ -120,9 +134,36 @@ alexaHome.prototype.didFinishLaunching = function() {
   this.eventBus.on('Alexa.LockController', alexaActions.alexaLockController.bind(this));
   this.eventBus.on('Alexa.ChannelController', alexaActions.alexaChannelController.bind(this));
   this.eventBus.on('Alexa.StepSpeaker', alexaActions.alexaStepSpeaker.bind(this));
+  this.eventBus.on('Alexa.InputController', alexaActions.alexaInputController.bind(this));
 };
 
+/*
 alexaHome.prototype.configureAccessory = function(accessory) {
   this.log("configureAccessory");
   // callback();
+};
+*/
+
+function AlexaService(name, log) {
+  this.name = name;
+  this.log = log;
+}
+
+AlexaService.prototype = {
+  getServices: function() {
+    // this.log("getServices", this.name);
+    // Information Service
+    var informationService = new Service.AccessoryInformation();
+    var hostname = os.hostname();
+
+    informationService
+      .setCharacteristic(Characteristic.Manufacturer, "homebridge-alexa")
+      .setCharacteristic(Characteristic.SerialNumber, hostname)
+      .setCharacteristic(Characteristic.FirmwareRevision, require('./package.json').version);
+    // Thermostat Service
+
+    alexaService = new Service.ContactSensor(this.name);
+
+    return [informationService, alexaService];
+  }
 };

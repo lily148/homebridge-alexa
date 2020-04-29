@@ -5,6 +5,7 @@ var AlexaLocal = require('../lib/alexaLocal.js').alexaLocal;
 var alexaActions = require('../lib/alexaActions.js');
 var EventEmitter = require('events').EventEmitter;
 var Homebridges = require('../lib/parse/Homebridges.js').Homebridges;
+var normalizeUUID = require('../node_modules/hap-node-client/lib/util.js').normalizeUUID;
 var debug = require('debug')('liveTest');
 var fs = require('fs');
 // var debug = require('debug')('alexaPlugin');
@@ -15,7 +16,7 @@ this.log = console.log;
 this.eventBus = new EventEmitter();
 
 this.pin = "031-45-154";
-this.beta = false;
+this.beta = true;
 this.events = false;
 this.oldParser = false;
 this.refresh = 60 * 15; // Value in seconds, default every 15 minute's
@@ -23,7 +24,7 @@ this.refresh = 60 * 15; // Value in seconds, default every 15 minute's
 var passwords = JSON.parse(fs.readFileSync("passwords.json"));
 
 var hbAccDump = fs.readFileSync(process.argv[2]).toString();
-var accessories = JSON.parse(hbAccDump.replace(/\uFFFD/g, ''));
+var accessories = normalizeUUID(JSON.parse(hbAccDump.replace(/\uFFFD/g, '')));
 
 var endPoints = [{
   ipAddress: "127.0.0.1",
@@ -102,10 +103,36 @@ var combine = [{
   "from": ["Yamaha"]
 }];
 
+var inputs = [{
+  "into": "TV",
+  "devices": [{
+    "manufacturer": "HTTP-IRBlaster",
+    "name": "Tuner",
+    "alexaName": "TUNER"
+  }, {
+    "manufacturer": "HTTP-IRBlaster",
+    "name": "HDMI1",
+    "alexaName": "HDMI 1"
+  }, {
+    "manufacturer": "HTTP-IRBlaster",
+    "name": "HDMI1",
+    "alexaName": "MEDIA PLAYER"
+  }, {
+    "manufacturer": "HTTP-IRBlaster",
+    "name": "HDMI2",
+    "alexaName": "HDMI 2"
+  }, {
+    "manufacturer": "HTTP-IRBlaster",
+    "name": "Tuner",
+    "alexaName": "TV"
+  }]
+}];
+
 var hbDevices = new Homebridges(endPoints, {
   "events": true,
   "speakers": speakers,
-  "combine": combine
+  "combine": combine,
+  "inputs": inputs
 });
 debug("Homebridges");
 
@@ -113,7 +140,8 @@ var response = hbDevices.toAlexa({
   perms: 'pw',
   "events": this.events,
   "speakers": speakers,
-  "combine": combine
+  "combine": combine,
+  "inputs": inputs
 }, message);
 
 var host = 'alexa.homebridge.ca';
@@ -168,6 +196,38 @@ this.eventBus.on('Alexa.ThermostatController', alexaActions.alexaThermostatContr
 this.eventBus.on('Alexa.LockController', alexaActions.alexaLockController.bind(this));
 this.eventBus.on('Alexa.ChannelController', alexaActions.alexaChannelController.bind(this));
 this.eventBus.on('Alexa.StepSpeaker', alexaActions.alexaStepSpeaker.bind(this));
+this.eventBus.on('Alexa.InputController', alexaActions.alexaInputController.bind(this));
+
+function alexaInputController(message, callback) {
+  console.log(JSON.stringify(message));
+  var now = new Date();
+  var response = {
+    "event": {
+      "header": {
+        "namespace": "Alexa",
+        "name": "Response",
+        "messageId": message.directive.header.messageId,
+        "correlationToken": message.directive.header.correlationToken,
+        "payloadVersion": "3"
+      },
+      "endpoint": {
+        "endpointId": message.directive.endpoint.endpointId
+      },
+      "payload": {}
+    },
+    "context": {
+      "properties": [{
+        "namespace": "Alexa.PowerLevelController",
+        "name": "powerLevel",
+        "value": message.directive.payload.powerLevel,
+        "timeOfSample": now.toISOString(),
+        "uncertaintyInMilliseconds": 500
+      }]
+    }
+  };
+  console.log(JSON.stringify(response));
+  callback(null, response);
+}
 
 function alexaDiscovery(message, callback) {
   // debug('alexaDiscovery', this);
